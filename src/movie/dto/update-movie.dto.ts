@@ -1,5 +1,12 @@
-import { IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
+import {
+  IsEmpty,
+  IsEnum,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { Genre } from '../schemas/movie.schema';
+import { User } from '../../auth/schemas/user.schema';
 
 export class UpdateMovieDto {
   @IsOptional()
@@ -21,4 +28,7 @@ export class UpdateMovieDto {
   @IsOptional()
   @IsEnum(Genre, { message: 'Please enter correct genre.' })
   readonly genre: Genre;
+
+  @IsEmpty({ message: 'You cannot pass user id' })
+  readonly user: User;
 }

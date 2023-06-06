@@ -7,6 +7,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import * as mongoose from 'mongoose';
 import { Movie } from './schemas/movie.schema';
 import { Query } from 'express-serve-static-core';
+import { User } from '../auth/schemas/user.schema';
 
 @Injectable()
 export class MovieService {
@@ -51,8 +52,8 @@ export class MovieService {
     return movies;
   }
 
-  async create(movie: Movie): Promise<Movie> {
-    const data = Object.assign(movie);
+  async create(movie: Movie, user: User): Promise<Movie> {
+    const data = Object.assign(movie, { user: user._id });
 
     const res = await this.movieModel.create(data);
     return res;

@@ -1,5 +1,12 @@
+import { User } from '../../auth/schemas/user.schema';
 import { Genre } from '../schemas/movie.schema';
-import { IsEnum, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import {
+  IsEmpty,
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+} from 'class-validator';
 
 export class CreateMovieDto {
   @IsNotEmpty()
@@ -21,4 +28,7 @@ export class CreateMovieDto {
   @IsNotEmpty()
   @IsEnum(Genre, { message: 'Please enter correct genre.' })
   readonly genre: Genre;
+
+  @IsEmpty({ message: 'You cannot pass user id' })
+  readonly user: User;
 }

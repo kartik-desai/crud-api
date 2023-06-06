@@ -7,12 +7,15 @@ import {
   Put,
   Delete,
   Query,
+  UseGuards,
+  Req,
 } from '@nestjs/common';
 import { MovieService } from './movie.service';
 import { Movie } from './schemas/movie.schema';
 import { CreateMovieDto } from './dto/create-movie.dto';
 import { UpdateMovieDto } from './dto/update-movie.dto';
 import { Query as FilterQuery } from 'express-serve-static-core';
+import { AuthGuard } from '@nestjs/passport';
 @Controller('movies')
 export class MovieController {
   constructor(private movieService: MovieService) {}
@@ -23,11 +26,13 @@ export class MovieController {
   }
 
   @Post()
+  @UseGuards(AuthGuard())
   async createMovie(
     @Body()
-    movie: CreateMovieDto,
+    book: CreateMovieDto,
+    @Req() req,
   ): Promise<Movie> {
-    return this.movieService.create(movie);
+    return this.movieService.create(book, req.user);
   }
 
   @Get(':id')

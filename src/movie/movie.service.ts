@@ -16,6 +16,10 @@ export class MovieService {
   ) {}
 
   async findAll(query: Query): Promise<Movie[]> {
+    const responsesPerPage = 2;
+    const currentPage = Number(query.page) || 1;
+    const skipPages = responsesPerPage * (currentPage - 1);
+
     const keyword = query.keyword
       ? {
           title: {
@@ -40,7 +44,10 @@ export class MovieService {
         }
       : {};
     const filter = { ...keyword, ...genre, ...rating };
-    const movies = await this.movieModel.find(filter);
+    const movies = await this.movieModel
+      .find(filter)
+      .limit(responsesPerPage)
+      .skip(skipPages);
     return movies;
   }
 

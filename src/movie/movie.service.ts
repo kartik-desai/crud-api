@@ -6,6 +6,7 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import * as mongoose from 'mongoose';
 import { Movie } from './schemas/movie.schema';
+import { Query } from 'express-serve-static-core';
 
 @Injectable()
 export class MovieService {
@@ -14,8 +15,32 @@ export class MovieService {
     private movieModel: mongoose.Model<Movie>,
   ) {}
 
-  async findAll(): Promise<Movie[]> {
-    const movies = await this.movieModel.find();
+  async findAll(query: Query): Promise<Movie[]> {
+    const keyword = query.keyword
+      ? {
+          title: {
+            $regex: query.keyword,
+            $options: 'i',
+          },
+        }
+      : {};
+    const genre = query.genre
+      ? {
+          genre: {
+            $regex: query.genre,
+            $options: 'i', //Case insensitive
+          },
+        }
+      : {};
+    const rating = query.rating
+      ? {
+          rating: {
+            $gte: query.rating,
+          },
+        }
+      : {};
+    const filter = { ...keyword, ...genre, ...rating };
+    const movies = await this.movieModel.find(filter);
     return movies;
   }
 

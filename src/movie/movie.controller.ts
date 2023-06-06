@@ -6,19 +6,20 @@ import {
   Param,
   Put,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { MovieService } from './movie.service';
 import { Movie } from './schemas/movie.schema';
 import { CreateMovieDto } from './dto/create-movie.dto';
 import { UpdateMovieDto } from './dto/update-movie.dto';
-
+import { Query as FilterQuery } from 'express-serve-static-core';
 @Controller('movies')
 export class MovieController {
   constructor(private movieService: MovieService) {}
 
   @Get()
-  async getAllMovies(): Promise<Movie[]> {
-    return this.movieService.findAll();
+  async getAllMovies(@Query() query: FilterQuery): Promise<Movie[]> {
+    return this.movieService.findAll(query);
   }
 
   @Post()
